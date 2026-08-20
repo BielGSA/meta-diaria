@@ -1,25 +1,14 @@
 {
-  "name": "Minha Meta Diária",
-  "short_name": "Meta Diária",
-  "description": "Acompanhe sua meta diária de ganhos, progresso e quanto falta.",
+  "name": "DriveMeta",
+  "short_name": "DriveMeta",
+  "description": "Controle de meta diária e ganhos por aplicativo.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f4f6f8",
-  "theme_color": "#2563eb",
-  "orientation": "portrait",
+  "background_color": "#0b1219",
+  "theme_color": "#0b1219",
   "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
   ]
 }
