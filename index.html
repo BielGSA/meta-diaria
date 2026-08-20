@@ -6,315 +6,137 @@
   <meta name="theme-color" content="#0b1219" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Meta Diária" />
+  <meta name="apple-mobile-web-app-title" content="DriveMeta" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icon-192.png" />
   <link rel="apple-touch-icon" href="icon-192.png" />
-  <title>Minha Meta Diária v1.1</title>
+  <title>DriveMeta v1.2</title>
   <style>
     :root{
-      --bg:#0b1219; --card:#111a24; --card2:#0f1720; --text:#f3f4f6; --muted:#9ca3af;
-      --border:#263241; --green:#34d058; --green2:#1faa49; --blue:#5ca8ff; --orange:#ff9f1a;
-      --danger:#ef4444; --shadow:0 14px 30px rgba(0,0,0,.26);
+      --bg:#0b1219;--card:#111a24;--card2:#0f1720;--text:#f3f4f6;--muted:#9ca3af;
+      --border:#263241;--green:#34d058;--green2:#1faa49;--blue:#5ca8ff;--orange:#ff9f1a;
+      --danger:#ef4444;--shadow:0 14px 30px rgba(0,0,0,.26)
     }
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    body{
-      margin:0;background:linear-gradient(180deg,#081019,#0d1620 55%,#0b1219);
-      color:var(--text);font-family:Arial,Helvetica,sans-serif;
-      min-height:100vh;min-height:100dvh;padding:max(16px,env(safe-area-inset-top)) 12px max(18px,env(safe-area-inset-bottom));
-    }
-    .app{width:min(100%,680px);margin:0 auto}
-    .top{
-      display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px
-    }
-    .brand{display:flex;align-items:center;gap:10px}
-    .brand img{width:44px;height:44px;border-radius:12px}
-    h1{font-size:24px;margin:0}
-    .version{font-size:12px;background:#153a24;color:#66e187;padding:5px 8px;border-radius:999px;font-weight:700}
-    .card{
-      background:linear-gradient(180deg,var(--card),var(--card2));
-      border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:12px;
-      box-shadow:var(--shadow)
-    }
-    .goal-card{text-align:center;padding:20px 16px}
-    .section-title{font-weight:800;font-size:18px;margin-bottom:12px}
-    .goal-title{font-size:18px;font-weight:800;margin-bottom:10px}
-    .goal-value{font-size:40px;color:var(--green);font-weight:900;line-height:1}
-    .goal-sub{color:#cbd5e1;font-size:17px;margin-top:8px}
-    .goal-pct{font-size:28px;color:var(--green);font-weight:900;margin-top:16px}
-    .goal-small{color:var(--muted);margin-top:5px}
-    .goal-editor{
-      margin:18px auto 0;display:flex;gap:8px;max-width:340px;align-items:center
-    }
-    input{
-      width:100%;border:1px solid var(--border);border-radius:12px;background:#0c141d;
-      color:var(--text);padding:13px 14px;font-size:17px;outline:none
-    }
-    input:focus{border-color:#3c8cff}
-    button{
-      border:0;border-radius:12px;padding:13px 14px;font-weight:800;font-size:15px;cursor:pointer
-    }
-    .save-goal{flex:0 0 auto;padding:11px 13px;background:#1f2a36;color:#e5e7eb;font-size:13px}
-    .primary{background:#163d26;color:#4ee176}
-    .secondary{background:#1f2a36;color:#e5e7eb}
-    .danger{background:#3b1717;color:#ff7b7b}
-    .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
-    .quick button{background:#131f2a;color:#43dd6b;border:1px solid #30404f}
-    .add-row{display:flex;gap:8px}
-    .add-row button{flex:0 0 130px}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .metric{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #25313c}
-    .metric:last-child{border-bottom:0}
-    .metric span:first-child{color:#d1d5db}
-    .metric strong{white-space:nowrap}
-    .blue{color:var(--blue)} .green{color:var(--green)} .orange{color:var(--orange)}
-    .days{
-      display:grid;grid-auto-flow:column;grid-auto-columns:minmax(112px,1fr);gap:9px;overflow-x:auto;padding-bottom:4px
-    }
-    .day{
-      border:1px solid var(--border);border-radius:14px;padding:12px;text-align:center;background:#101923
-    }
-    .day .date{font-weight:800}.day .dow{color:var(--muted);font-size:12px;margin-top:3px}
-    .day .amount{margin-top:10px;color:var(--green);font-weight:900}
-    .day .pct{font-size:12px;color:#d1d5db;margin-top:4px}
-    .history-item{
-      display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #263241
-    }
-    .history-item:last-child{border-bottom:0}
-    .history-left{display:flex;flex-direction:column;gap:3px}
-    .history-time{color:var(--muted);font-size:12px}
-    .empty{text-align:center;color:var(--muted);padding:18px 0}
-    .actions{display:flex;gap:8px;margin-top:12px}
-    .actions button{flex:1}
-    .progress{
-      margin:18px auto 0;max-width:420px;height:16px;background:#2d3743;border-radius:999px;overflow:hidden
-    }
-    .progress > div{height:100%;background:var(--green);width:0%;transition:width .25s}
-    @media(max-width:560px){
-      .grid2{grid-template-columns:1fr}
-      .quick{grid-template-columns:repeat(2,1fr)}
-      .add-row{flex-direction:column}.add-row button{flex:1}
-      .goal-value{font-size:36px}
-    }
+    body{margin:0;background:linear-gradient(180deg,#081019,#0d1620 55%,#0b1219);color:var(--text);font-family:Arial,Helvetica,sans-serif;min-height:100vh;min-height:100dvh;padding:max(16px,env(safe-area-inset-top)) 12px max(18px,env(safe-area-inset-bottom))}
+    .app{width:min(100%,680px);margin:0 auto}.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.brand{display:flex;align-items:center;gap:10px}.brand img{width:44px;height:44px;border-radius:12px}h1{font-size:24px;margin:0}.version{font-size:12px;background:#153a24;color:#66e187;padding:5px 8px;border-radius:999px;font-weight:700}
+    .card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+    .goal-card{text-align:center;padding:20px 16px}.section-title{font-weight:800;font-size:18px;margin-bottom:12px}.goal-title{font-size:18px;font-weight:800;margin-bottom:10px}.goal-value{font-size:40px;color:var(--green);font-weight:900;line-height:1}.goal-sub{color:#cbd5e1;font-size:17px;margin-top:8px}.goal-pct{font-size:28px;color:var(--green);font-weight:900;margin-top:16px}.goal-small{color:var(--muted);margin-top:5px}
+    input,select{width:100%;border:1px solid var(--border);border-radius:12px;background:#0c141d;color:var(--text);padding:13px 14px;font-size:17px;outline:none}input:focus,select:focus{border-color:#3c8cff}
+    button{border:0;border-radius:12px;padding:13px 14px;font-weight:800;font-size:15px;cursor:pointer}.primary{background:#163d26;color:#4ee176}.secondary{background:#1f2a36;color:#e5e7eb}.danger{background:#3b1717;color:#ff7b7b}.options-btn{padding:10px 12px;white-space:nowrap}
+    .quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.quick button{background:#131f2a;color:#43dd6b;border:1px solid #30404f}.add-row{display:flex;gap:8px}.add-row button{flex:0 0 130px}
+    .apps{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:10px}.app-btn{background:#131f2a;color:#cbd5e1;border:1px solid #30404f;padding:10px 6px;font-size:13px}.app-btn.active{background:#173a25;color:#62e687;border-color:#39a85b}.selected-app{font-size:12px;color:var(--muted);margin:-3px 0 10px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.metric{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #25313c}.metric:last-child{border-bottom:0}.metric span:first-child{color:#d1d5db}.metric strong{white-space:nowrap}.blue{color:var(--blue)}.green{color:var(--green)}.orange{color:var(--orange)}
+    .days{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(112px,1fr);gap:9px;overflow-x:auto;padding-bottom:4px}.day{border:1px solid var(--border);border-radius:14px;padding:12px;text-align:center;background:#101923}.day .date{font-weight:800}.day .dow{color:var(--muted);font-size:12px;margin-top:3px}.day .amount{margin-top:10px;color:var(--green);font-weight:900}.day .pct{font-size:12px;color:#d1d5db;margin-top:4px}
+    .history-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #263241}.history-item:last-child{border-bottom:0}.history-left{display:flex;flex-direction:column;gap:3px}.history-time{color:var(--muted);font-size:12px}.app-tag{display:inline-block;font-size:11px;font-weight:800;color:#a7f3d0;background:#143524;border:1px solid #275f3f;border-radius:999px;padding:2px 7px;width:max-content}.empty{text-align:center;color:var(--muted);padding:18px 0}.actions{display:flex;gap:8px;margin-top:12px}.actions button{flex:1}.progress{margin:18px auto 0;max-width:420px;height:16px;background:#2d3743;border-radius:999px;overflow:hidden}.progress>div{height:100%;background:var(--green);width:0%;transition:width .25s}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.68);display:none;align-items:flex-end;justify-content:center;padding:10px;z-index:20}.modal.open{display:flex}.panel{width:min(100%,680px);max-height:88vh;overflow:auto;background:#0e1720;border:1px solid var(--border);border-radius:20px 20px 14px 14px;padding:16px;box-shadow:0 -20px 50px rgba(0,0,0,.45)}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}.panel-head h2{margin:0;font-size:22px}.close{padding:8px 11px}.option-block{border:1px solid var(--border);border-radius:15px;padding:14px;margin-bottom:12px;background:#101923}.option-block h3{margin:0 0 10px;font-size:17px}.option-row{display:flex;gap:8px}.option-row button{flex:0 0 auto}.quick-editor{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.quick-editor input{text-align:center;padding:11px 7px}.hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.35}.edit-list{margin-top:10px}.edit-item{border-top:1px solid var(--border);padding:10px 0}.edit-grid{display:grid;grid-template-columns:1.2fr 1fr auto;gap:7px;align-items:center}.edit-grid input,.edit-grid select{font-size:14px;padding:10px}.small-danger{padding:10px 11px}.edit-meta{font-size:12px;color:var(--muted);margin-bottom:6px}
+    @media(max-width:560px){.grid2{grid-template-columns:1fr}.quick{grid-template-columns:repeat(2,1fr)}.apps{grid-template-columns:repeat(2,1fr)}.add-row{flex-direction:column}.add-row button{flex:1}.goal-value{font-size:36px}.quick-editor{grid-template-columns:repeat(2,1fr)}.edit-grid{grid-template-columns:1fr 1fr}.edit-grid .small-danger{grid-column:1/-1}.top{align-items:flex-start}h1{font-size:22px}}
   </style>
 </head>
 <body>
-  <main class="app">
-    <div class="top">
-      <div class="brand">
-        <img src="icon-192.png" alt="">
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <h1>Minha Meta Diária</h1><span class="version">v1.1</span>
-        </div>
-      </div>
+<main class="app">
+  <div class="top">
+    <div class="brand"><img src="icon-192.png" alt=""><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><h1>DriveMeta</h1><span class="version">v1.2</span></div></div>
+    <button id="openOptions" class="secondary options-btn">⚙️ Opções</button>
+  </div>
+
+  <section class="card goal-card">
+    <div class="goal-title">Meta do dia</div><div class="goal-value" id="goalCurrent">R$ 0,00</div><div class="goal-sub">de <span id="goalTotal">R$ 500,00</span></div>
+    <div class="progress"><div id="progressBar"></div></div><div class="goal-pct" id="goalPct">0,00%</div><div class="goal-small">da meta</div>
+  </section>
+
+  <section class="card">
+    <div class="section-title">Adicionar valor rápido</div>
+    <div class="quick" id="quickButtons"></div>
+    <div class="section-title" style="font-size:15px;margin-top:3px">Aplicativo do ganho</div>
+    <div class="apps" id="appButtons">
+      <button class="app-btn" data-app="99">99</button><button class="app-btn" data-app="Uber">UBER</button><button class="app-btn" data-app="inDrive">INDRIVER</button><button class="app-btn" data-app="Lalamove">LALAMOVE</button>
     </div>
+    <div class="selected-app">Selecionado: <strong id="selectedAppLabel">99</strong></div>
+    <div class="add-row"><input id="amountInput" inputmode="decimal" placeholder="Digite ou monte o valor"><button id="addBtn" class="primary">ADICIONAR</button></div>
+    <div class="hint">Os botões rápidos apenas somam no campo. O lançamento só é salvo ao tocar em ADICIONAR. Centavos são aceitos.</div>
+  </section>
 
-    <section class="card goal-card">
-      <div class="goal-title">Meta do dia</div>
-      <div class="goal-value" id="goalCurrent">R$ 0,00</div>
-      <div class="goal-sub">de <span id="goalTotal">R$ 500,00</span></div>
-      <div class="progress"><div id="progressBar"></div></div>
-      <div class="goal-pct" id="goalPct">0,00%</div>
-      <div class="goal-small">da meta</div>
-      <div class="goal-editor">
-        <input id="goalInput" inputmode="decimal" aria-label="Meta diária" placeholder="500">
-        <button id="saveGoal" class="save-goal">Salvar</button>
-      </div>
-    </section>
+  <section class="grid2">
+    <div class="card"><div class="section-title">Resumo</div><div class="metric"><span>Meta do dia</span><strong class="blue" id="sumGoal">R$ 500,00</strong></div><div class="metric"><span>Total do dia</span><strong class="green" id="sumToday">R$ 0,00</strong></div><div class="metric"><span>Faltam</span><strong class="orange" id="sumRemaining">R$ 500,00</strong></div><div class="metric"><span>Progresso</span><strong class="green" id="sumPct">0,00%</strong></div><div class="metric"><span>Dias com meta batida (mês)</span><strong class="green" id="daysHit">0 / 0</strong></div></div>
+    <div class="card"><div class="section-title">Visão geral</div><div class="metric"><span>Total da semana</span><strong class="blue" id="weekTotal">R$ 0,00</strong></div><div class="metric"><span>Média diária (semana)</span><strong class="green" id="weekAvg">R$ 0,00</strong></div><div class="metric"><span>Total do mês</span><strong class="blue" id="monthTotal">R$ 0,00</strong></div><div class="metric"><span>Média diária (mês)</span><strong class="green" id="monthAvg">R$ 0,00</strong></div></div>
+  </section>
 
-    <section class="card">
-      <div class="section-title">Adicionar valor rápido</div>
-      <div class="quick">
-        <button data-value="5">+ R$ 5</button>
-        <button data-value="10">+ R$ 10</button>
-        <button data-value="15">+ R$ 15</button>
-        <button data-value="20">+ R$ 20</button>
-      </div>
-      <div class="add-row">
-        <input id="amountInput" inputmode="decimal" placeholder="Digite outro valor">
-        <button id="addBtn" class="primary">Adicionar</button>
-      </div>
-    </section>
+  <section class="card"><div class="section-title">Histórico de dias</div><div id="daysHistory" class="days"></div></section>
+  <section class="card"><div class="section-title" id="entriesTitle">Histórico de lançamentos (0)</div><div id="entriesHistory"></div><div class="actions"><button id="undoBtn" class="secondary">Desfazer último</button><button id="resetBtn" class="danger">Zerar o dia</button></div></section>
+</main>
 
-    <section class="grid2">
-      <div class="card">
-        <div class="section-title">Resumo</div>
-        <div class="metric"><span>Meta do dia</span><strong class="blue" id="sumGoal">R$ 500,00</strong></div>
-        <div class="metric"><span>Total do dia</span><strong class="green" id="sumToday">R$ 0,00</strong></div>
-        <div class="metric"><span>Faltam</span><strong class="orange" id="sumRemaining">R$ 500,00</strong></div>
-        <div class="metric"><span>Progresso</span><strong class="green" id="sumPct">0,00%</strong></div>
-        <div class="metric"><span>Dias com meta batida (mês)</span><strong class="green" id="daysHit">0 / 0</strong></div>
-      </div>
+<div class="modal" id="optionsModal" role="dialog" aria-modal="true" aria-label="Opções">
+  <div class="panel">
+    <div class="panel-head"><h2>⚙️ Opções</h2><button id="closeOptions" class="secondary close">Fechar</button></div>
+    <div class="option-block"><h3>Definir meta</h3><div class="option-row"><input id="goalInput" inputmode="decimal" placeholder="500"><button id="saveGoal" class="primary">Salvar</button></div></div>
+    <div class="option-block"><h3>Personalizar valores rápidos</h3><div class="quick-editor"><input class="quick-setting" inputmode="decimal"><input class="quick-setting" inputmode="decimal"><input class="quick-setting" inputmode="decimal"><input class="quick-setting" inputmode="decimal"></div><div class="option-row" style="margin-top:9px"><button id="saveQuick" class="primary">Salvar valores</button></div><div class="hint">Você pode usar centavos, por exemplo 2,50 ou 7,25.</div></div>
+    <div class="option-block"><h3>Editar dias anteriores</h3><div class="option-row"><input id="editDate" type="date"><button id="loadDay" class="secondary">Abrir dia</button></div><div id="editDaySummary" class="hint"></div><div id="editEntries" class="edit-list"></div></div>
+  </div>
+</div>
 
-      <div class="card">
-        <div class="section-title">Visão geral</div>
-        <div class="metric"><span>Total da semana</span><strong class="blue" id="weekTotal">R$ 0,00</strong></div>
-        <div class="metric"><span>Média diária (semana)</span><strong class="green" id="weekAvg">R$ 0,00</strong></div>
-        <div class="metric"><span>Total do mês</span><strong class="blue" id="monthTotal">R$ 0,00</strong></div>
-        <div class="metric"><span>Média diária (mês)</span><strong class="green" id="monthAvg">R$ 0,00</strong></div>
-      </div>
-    </section>
+<script>
+const KEY="driveMetaApp_v12", OLD_KEYS=["metaDiariaApp_v11","metaDiariaApp_v2"];
+const APPS=["99","Uber","inDrive","Lalamove"];
+let state={goal:500,days:{},quickValues:[5,10,15,20],selectedApp:"99"};
+const $=id=>document.getElementById(id);
+function money(v){return Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+function pct(v){return Number(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})+"%"}
+function parseMoney(v){v=String(v??"").trim().replace(/\s/g,"");if(v.includes(",")&&v.includes("."))v=v.replace(/\./g,"").replace(",", ".");else v=v.replace(",", ".");const n=Number(v);return Number.isFinite(n)?Math.round(n*100)/100:NaN}
+function localDateKey(d=new Date()){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");return `${y}-${m}-${day}`}
+function ensureDay(k=localDateKey()){if(!state.days[k])state.days[k]={entries:[]};if(!Array.isArray(state.days[k].entries))state.days[k].entries=[];return state.days[k]}
+function ensureToday(){return ensureDay(localDateKey())}
+function totalEntries(entries=[]){return entries.reduce((s,e)=>s+Number(e.value||0),0)}
+function normalizeState(p){
+  const out={goal:Number(p?.goal)>0?Number(p.goal):500,days:p?.days&&typeof p.days==="object"?p.days:{},quickValues:Array.isArray(p?.quickValues)&&p.quickValues.length===4?p.quickValues.map(Number):[5,10,15,20],selectedApp:APPS.includes(p?.selectedApp)?p.selectedApp:"99"};
+  Object.values(out.days).forEach(d=>{if(!Array.isArray(d.entries))d.entries=[];d.entries=d.entries.map(e=>({value:Number(e.value||0),date:e.date||new Date().toISOString(),app:APPS.includes(e.app)?e.app:(e.app||"")}))});
+  return out;
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function load(){
+  const saved=localStorage.getItem(KEY);if(saved){try{state=normalizeState(JSON.parse(saved));ensureToday();return}catch{}}
+  for(const key of OLD_KEYS){const old=localStorage.getItem(key);if(!old)continue;try{const p=JSON.parse(old);if(p.days){state=normalizeState(p)}else{state.goal=typeof p.goal==="number"?p.goal:500;state.days[localDateKey()]={entries:Array.isArray(p.entries)?p.entries:[]}}break}catch{}}
+  state=normalizeState(state);ensureToday();save();
+}
+function startOfWeek(d){const x=new Date(d);const day=x.getDay(),diff=day===0?-6:1-day;x.setDate(x.getDate()+diff);x.setHours(0,0,0,0);return x}
+function sameMonth(date,now){return date.getFullYear()===now.getFullYear()&&date.getMonth()===now.getMonth()}
+function renderQuick(){
+  $("quickButtons").innerHTML=state.quickValues.map((v,i)=>`<button data-i="${i}">+ ${money(v)}</button>`).join("");
+  document.querySelectorAll("#quickButtons button").forEach(b=>b.addEventListener("click",()=>{const add=Number(state.quickValues[Number(b.dataset.i)]||0),current=parseMoney($("amountInput").value);const next=(Number.isFinite(current)?current:0)+add;$("amountInput").value=next.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}));
+}
+function renderAppSelection(){document.querySelectorAll(".app-btn").forEach(b=>b.classList.toggle("active",b.dataset.app===state.selectedApp));$("selectedAppLabel").textContent=state.selectedApp}
+function update(){
+  const today=ensureToday(),total=totalEntries(today.entries),goal=state.goal||500,progress=goal>0?total/goal*100:0,remaining=Math.max(goal-total,0);
+  $("goalCurrent").textContent=money(total);$("goalTotal").textContent=money(goal);$("goalPct").textContent=pct(progress);$("progressBar").style.width=Math.min(Math.max(progress,0),100)+"%";
+  $("sumGoal").textContent=money(goal);$("sumToday").textContent=money(total);$("sumRemaining").textContent=remaining===0&&total>=goal?"Meta batida!":money(remaining);$("sumPct").textContent=pct(progress);
+  const now=new Date(),weekStart=startOfWeek(now);let weekTotal=0,weekDays=0,monthTotal=0,monthDays=0,hit=0,monthCount=0;
+  Object.entries(state.days).forEach(([k,d])=>{const dt=new Date(k+"T12:00:00"),t=totalEntries(d.entries||[]);if(dt>=weekStart&&dt<=now){weekTotal+=t;if(t>0)weekDays++}if(sameMonth(dt,now)){monthTotal+=t;if(t>0)monthDays++;if(t>0)monthCount++;if(t>=goal)hit++}});
+  $("weekTotal").textContent=money(weekTotal);$("weekAvg").textContent=money(weekDays?weekTotal/weekDays:0);$("monthTotal").textContent=money(monthTotal);$("monthAvg").textContent=money(monthDays?monthTotal/monthDays:0);$("daysHit").textContent=`${hit} / ${monthCount}`;
+  renderDays();renderEntries();renderAppSelection();save();
+}
+function renderDays(){const entries=Object.entries(state.days).filter(([,d])=>totalEntries(d.entries||[])!==0).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,14);if(!entries.length){$("daysHistory").innerHTML='<div class="empty">Nenhum dia registrado.</div>';return}$("daysHistory").innerHTML=entries.map(([k,d])=>{const dt=new Date(k+"T12:00:00"),t=totalEntries(d.entries||[]),pr=state.goal>0?t/state.goal*100:0,date=dt.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"}),dow=dt.toLocaleDateString("pt-BR",{weekday:"short"}).replace(".","");return `<div class="day"><div class="date">${date}</div><div class="dow">${dow}</div><div class="amount">${money(t)}</div><div class="pct">${pct(pr)}</div></div>`}).join("")}
+function renderEntries(){const today=ensureToday();$("entriesTitle").textContent=`Histórico de lançamentos (${today.entries.length})`;if(!today.entries.length){$("entriesHistory").innerHTML='<div class="empty">Nenhum lançamento hoje.</div>';return}let running=0;const rows=today.entries.map(e=>{running+=Number(e.value||0);return {...e,running}});$("entriesHistory").innerHTML=rows.reverse().map(e=>{const time=new Date(e.date).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),tag=e.app?`<span class="app-tag">${e.app}</span>`:"";return `<div class="history-item"><div class="history-left"><strong class="green">+ ${money(e.value)}</strong>${tag}<span class="history-time">${time}</span></div><strong>${money(e.running)}</strong></div>`}).join("")}
+function addValue(){const n=parseMoney($("amountInput").value);if(!Number.isFinite(n)||n<=0){alert("Digite um valor válido.");return}ensureToday().entries.push({value:n,date:new Date().toISOString(),app:state.selectedApp});$("amountInput").value="";update()}
+function openOptions(){
+  $("goalInput").value=state.goal.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});document.querySelectorAll(".quick-setting").forEach((el,i)=>el.value=Number(state.quickValues[i]||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}));
+  const y=new Date();y.setDate(y.getDate()-1);$("editDate").max=localDateKey(new Date());if(!$("editDate").value)$("editDate").value=localDateKey(y);$("editEntries").innerHTML="";$("editDaySummary").textContent="";$("optionsModal").classList.add("open")
+}
+function closeOptions(){$("optionsModal").classList.remove("open")}
+function renderEditDay(){const k=$("editDate").value;if(!k)return;const day=state.days[k];if(!day||!day.entries?.length){$("editDaySummary").textContent="Nenhum lançamento neste dia.";$("editEntries").innerHTML="";return}$("editDaySummary").textContent=`${day.entries.length} lançamento(s) • Total ${money(totalEntries(day.entries))}`;$("editEntries").innerHTML=day.entries.map((e,i)=>`<div class="edit-item"><div class="edit-meta">Lançamento ${i+1} • ${new Date(e.date).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</div><div class="edit-grid"><input class="edit-value" data-i="${i}" inputmode="decimal" value="${Number(e.value||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})}"><select class="edit-app" data-i="${i}">${['','99','Uber','inDrive','Lalamove'].map(a=>`<option value="${a}" ${a===(e.app||'')?'selected':''}>${a||'Sem app'}</option>`).join('')}</select><button class="danger small-danger delete-entry" data-i="${i}">Excluir</button></div></div>`).join("");
+  document.querySelectorAll(".edit-value").forEach(el=>el.addEventListener("change",()=>{const n=parseMoney(el.value);if(!Number.isFinite(n)||n<=0){alert("Valor inválido.");renderEditDay();return}day.entries[Number(el.dataset.i)].value=n;save();update();renderEditDay()}));
+  document.querySelectorAll(".edit-app").forEach(el=>el.addEventListener("change",()=>{day.entries[Number(el.dataset.i)].app=el.value;save();update();renderEditDay()}));
+  document.querySelectorAll(".delete-entry").forEach(el=>el.addEventListener("click",()=>{if(confirm("Excluir este lançamento?")){day.entries.splice(Number(el.dataset.i),1);if(!day.entries.length)delete state.days[k];save();update();renderEditDay()}}));
+}
 
-    <section class="card">
-      <div class="section-title">Histórico de dias</div>
-      <div id="daysHistory" class="days"></div>
-    </section>
-
-    <section class="card">
-      <div class="section-title">Histórico de lançamentos</div>
-      <div id="entriesHistory"></div>
-      <div class="actions">
-        <button id="undoBtn" class="secondary">Desfazer último</button>
-        <button id="resetBtn" class="danger">Zerar o dia</button>
-      </div>
-    </section>
-  </main>
-
-  <script>
-    const KEY="metaDiariaApp_v11";
-    const OLD_KEY="metaDiariaApp_v2";
-    let state={goal:500, days:{}};
-
-    const $=id=>document.getElementById(id);
-
-    function money(v){return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
-    function pct(v){return v.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})+"%"}
-    function parseMoney(v){
-      v=String(v).trim().replace(/\s/g,"");
-      if(v.includes(",")&&v.includes("."))v=v.replace(/\./g,"").replace(",",".");
-      else v=v.replace(",",".");
-      const n=Number(v);return Number.isFinite(n)?n:NaN;
-    }
-    function dateKey(d=new Date()){return d.toISOString().slice(0,10)}
-    function ensureToday(){
-      const k=dateKey();
-      if(!state.days[k]) state.days[k]={entries:[]};
-      return state.days[k];
-    }
-    function totalEntries(entries){return entries.reduce((s,e)=>s+e.value,0)}
-    function save(){localStorage.setItem(KEY,JSON.stringify(state))}
-    function load(){
-      const saved=localStorage.getItem(KEY);
-      if(saved){
-        try{const p=JSON.parse(saved);if(p.goal&&p.days)state=p}catch{}
-      }else{
-        const old=localStorage.getItem(OLD_KEY);
-        if(old){
-          try{
-            const p=JSON.parse(old);
-            state.goal=typeof p.goal==="number"?p.goal:500;
-            state.days[dateKey()]={entries:Array.isArray(p.entries)?p.entries:[]};
-          }catch{}
-        }
-      }
-      ensureToday();
-    }
-    function startOfWeek(d){
-      const x=new Date(d);const day=x.getDay();const diff=day===0?-6:1-day;
-      x.setDate(x.getDate()+diff);x.setHours(0,0,0,0);return x;
-    }
-    function sameMonth(date, now){
-      return date.getFullYear()===now.getFullYear()&&date.getMonth()===now.getMonth();
-    }
-    function update(){
-      const today=ensureToday();
-      const total=totalEntries(today.entries);
-      const goal=state.goal||500;
-      const progress=goal>0?(total/goal)*100:0;
-      const remaining=Math.max(goal-total,0);
-
-      $("goalInput").value=String(goal).replace(".",",");
-      $("goalCurrent").textContent=money(total);
-      $("goalTotal").textContent=money(goal);
-      $("goalPct").textContent=pct(progress);
-      $("progressBar").style.width=Math.min(Math.max(progress,0),100)+"%";
-
-      $("sumGoal").textContent=money(goal);
-      $("sumToday").textContent=money(total);
-      $("sumRemaining").textContent=remaining===0&&total>=goal?"Meta batida!":money(remaining);
-      $("sumPct").textContent=pct(progress);
-
-      const now=new Date();
-      const weekStart=startOfWeek(now);
-      let weekTotal=0, weekDays=0, monthTotal=0, monthDays=0, hit=0, monthCount=0;
-
-      Object.entries(state.days).forEach(([k,d])=>{
-        const dt=new Date(k+"T12:00:00");
-        const t=totalEntries(d.entries||[]);
-        if(dt>=weekStart&&dt<=now){weekTotal+=t;if(t>0)weekDays++}
-        if(sameMonth(dt,now)){monthTotal+=t;if(t>0)monthDays++;monthCount++;if(t>=goal)hit++}
-      });
-
-      $("weekTotal").textContent=money(weekTotal);
-      $("weekAvg").textContent=money(weekDays?weekTotal/weekDays:0);
-      $("monthTotal").textContent=money(monthTotal);
-      $("monthAvg").textContent=money(monthDays?monthTotal/monthDays:0);
-      $("daysHit").textContent=`${hit} / ${monthCount}`;
-
-      renderDays();
-      renderEntries();
-      save();
-    }
-    function renderDays(){
-      const entries=Object.entries(state.days)
-        .sort((a,b)=>b[0].localeCompare(a[0]))
-        .slice(0,14);
-      if(!entries.length){$("daysHistory").innerHTML='<div class="empty">Nenhum dia registrado.</div>';return}
-      $("daysHistory").innerHTML=entries.map(([k,d])=>{
-        const dt=new Date(k+"T12:00:00");
-        const t=totalEntries(d.entries||[]);
-        const pr=state.goal>0?(t/state.goal)*100:0;
-        const date=dt.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});
-        const dow=dt.toLocaleDateString("pt-BR",{weekday:"short"}).replace(".","");
-        return `<div class="day">
-          <div class="date">${date}</div>
-          <div class="dow">${dow}</div>
-          <div class="amount">${money(t)}</div>
-          <div class="pct">${pct(pr)}</div>
-        </div>`;
-      }).join("");
-    }
-    function renderEntries(){
-      const today=ensureToday();
-      if(!today.entries.length){$("entriesHistory").innerHTML='<div class="empty">Nenhum lançamento hoje.</div>';return}
-      let running=0;
-      const rows=today.entries.map(e=>{running+=e.value;return {...e,running}});
-      $("entriesHistory").innerHTML=rows.reverse().map(e=>{
-        const time=new Date(e.date).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
-        return `<div class="history-item">
-          <div class="history-left"><strong class="green">+ ${money(e.value)}</strong><span class="history-time">${time}</span></div>
-          <strong>${money(e.running)}</strong>
-        </div>`;
-      }).join("");
-    }
-    function add(v){
-      const n=parseMoney(v);
-      if(!Number.isFinite(n)||n===0){alert("Digite um valor válido.");return}
-      ensureToday().entries.push({value:n,date:new Date().toISOString()});
-      $("amountInput").value="";
-      update();
-    }
-
-    $("saveGoal").addEventListener("click",()=>{
-      const g=parseMoney($("goalInput").value);
-      if(!Number.isFinite(g)||g<=0){alert("Digite uma meta válida.");return}
-      state.goal=g;update();
-    });
-    $("addBtn").addEventListener("click",()=>add($("amountInput").value));
-    $("amountInput").addEventListener("keydown",e=>{if(e.key==="Enter")add($("amountInput").value)});
-    document.querySelectorAll(".quick button").forEach(b=>b.addEventListener("click",()=>add(b.dataset.value)));
-    $("undoBtn").addEventListener("click",()=>{
-      const e=ensureToday().entries;if(e.length){e.pop();update()}
-    });
-    $("resetBtn").addEventListener("click",()=>{
-      if(confirm("Deseja zerar todos os lançamentos de hoje?")){ensureToday().entries=[];update()}
-    });
-
-    if("serviceWorker" in navigator){
-      window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
-    }
-
-    load();update();
-  </script>
+$("openOptions").addEventListener("click",openOptions);$("closeOptions").addEventListener("click",closeOptions);$("optionsModal").addEventListener("click",e=>{if(e.target===$("optionsModal"))closeOptions()});
+$("saveGoal").addEventListener("click",()=>{const g=parseMoney($("goalInput").value);if(!Number.isFinite(g)||g<=0){alert("Digite uma meta válida.");return}state.goal=g;update();alert("Meta atualizada.")});
+$("saveQuick").addEventListener("click",()=>{const vals=[...document.querySelectorAll(".quick-setting")].map(el=>parseMoney(el.value));if(vals.some(v=>!Number.isFinite(v)||v<=0)){alert("Preencha os quatro valores rápidos corretamente.");return}state.quickValues=vals;renderQuick();save();alert("Valores rápidos atualizados.")});
+$("loadDay").addEventListener("click",renderEditDay);
+document.querySelectorAll(".app-btn").forEach(b=>b.addEventListener("click",()=>{state.selectedApp=b.dataset.app;renderAppSelection();save()}));
+$("addBtn").addEventListener("click",addValue);$("amountInput").addEventListener("keydown",e=>{if(e.key==="Enter")addValue()});
+$("undoBtn").addEventListener("click",()=>{const e=ensureToday().entries;if(e.length&&confirm("Desfazer o último lançamento?")){e.pop();update()}});$("resetBtn").addEventListener("click",()=>{if(confirm("Deseja zerar todos os lançamentos de hoje?")){ensureToday().entries=[];update()}});
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
+load();renderQuick();update();
+</script>
 </body>
 </html>
