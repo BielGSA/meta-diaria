@@ -68,7 +68,7 @@
     .platform-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px}.platform-box{border:1px solid var(--border);border-radius:12px;padding:11px;background:#101923}
     .platform-box span{display:block;color:var(--muted);font-size:12px}.platform-box strong{display:block;margin-top:4px;color:var(--green)}
     .splash{position:fixed;inset:0;z-index:100;background:#081019;display:flex;align-items:center;justify-content:center;transition:opacity .35s}
-    .splash.hide{opacity:0;pointer-events:none}.splash-card{text-align:center;padding:28px}.splash img{width:92px;height:92px;border-radius:22px;margin-bottom:16px}
+    .splash.hide{opacity:0;pointer-events:none}.splash-card{text-align:center;padding:28px}.splash img{width:min(82vw,430px);height:auto;max-height:62vh;object-fit:contain;margin-bottom:18px}
     .splash-brand{font-size:28px;font-weight:900}.splash-sub{margin-top:7px;color:var(--muted);letter-spacing:.08em;font-size:12px}
     .tk-sign{font-size:12px;text-align:center;color:var(--muted);padding:5px 0 12px}
     @media(max-width:560px){
@@ -83,8 +83,7 @@
 
 <div class="splash" id="splash">
   <div class="splash-card">
-    <img src="icon-192.png" alt="TK27 Labs">
-    <div class="splash-brand">TK27 Labs</div>
+    <img src="tk27-labs.png" alt="TK27 Labs">
     <div class="splash-sub">APRESENTA</div>
   </div>
 </div>
@@ -382,7 +381,7 @@ $("resetBtn").onclick=()=>{if(confirm("Deseja zerar todos os lançamentos de hoj
 
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
 load();renderQuick();update();
-window.addEventListener("load",()=>setTimeout(()=>$("splash").classList.add("hide"),900));
+window.addEventListener("load",()=>setTimeout(()=>$("splash").classList.add("hide"),1400));
 </script>
 </body>
 </html>
