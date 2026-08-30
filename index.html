@@ -77,15 +77,61 @@
       .edit-grid{grid-template-columns:1fr 1fr}.edit-grid .small-danger{grid-column:1/-1}.top{align-items:flex-start}h1{font-size:22px}
       .platform-row{grid-template-columns:1fr auto}.platform-row .secondary{grid-column:1/-1}
     }
-  </style>
+  
+    .splash{
+      position:fixed; inset:0; z-index:9999; background:#0b0d0f;
+      display:flex; align-items:center; justify-content:center;
+      transition:opacity .45s ease, visibility .45s ease;
+    }
+    .splash.hide{opacity:0; visibility:hidden; pointer-events:none}
+    .splashStage{
+      position:absolute; inset:0; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; opacity:0;
+      transform:scale(.98); transition:opacity .45s ease, transform .45s ease;
+      padding:32px; box-sizing:border-box; text-align:center;
+    }
+    .splashStage.active{opacity:1; transform:scale(1)}
+    .splashTkLogo{
+      width:min(82vw,520px); max-height:58vh; object-fit:contain;
+      mix-blend-mode:screen;
+    }
+    .splashPresents{
+      margin-top:18px; font-size:clamp(18px,4vw,28px); letter-spacing:.35em;
+      color:#f59a23; font-weight:700;
+    }
+    .splashDriveIcon{
+      width:min(42vw,220px); aspect-ratio:1/1; object-fit:cover;
+      border-radius:24%; box-shadow:0 0 34px rgba(137,255,0,.18),0 0 26px rgba(255,153,0,.18);
+    }
+    .splashDriveName{
+      margin-top:22px; font-size:clamp(34px,9vw,62px); font-weight:800; color:#f5f5f5;
+      letter-spacing:-.04em;
+    }
+    .splashDriveName span{
+      background:linear-gradient(90deg,#ff9800,#d8df00,#37c92d);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .splashDriveTag{
+      margin-top:8px; color:#aeb2b7; font-size:clamp(14px,3.8vw,20px);
+    }
+
+</style>
 </head>
 <body>
 
-<div class="splash" id="splash">
-  <div class="splash-card">
-    <img src="tk27-labs.png" alt="TK27 Labs">
-    <div class="splash-sub">APRESENTA</div>
+
+  <div id="splash" class="splash">
+    <div id="splashTk27" class="splashStage active">
+      <img src="./tk27-labs.png" alt="TK27 Labs" class="splashTkLogo">
+      <div class="splashPresents">APRESENTA</div>
+    </div>
+    <div id="splashDriveMeta" class="splashStage">
+      <img src="./icon-512.png" alt="DriveMeta" class="splashDriveIcon">
+      <div class="splashDriveName">Drive<span>Meta</span></div>
+      <div class="splashDriveTag">Acompanhe. Planeje. Alcance.</div>
+    </div>
   </div>
+</div>
 </div>
 
 <main class="app">
@@ -383,5 +429,25 @@ if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.ser
 load();renderQuick();update();
 window.addEventListener("load",()=>setTimeout(()=>$("splash").classList.add("hide"),1400));
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const splash = document.getElementById("splash");
+  const tk = document.getElementById("splashTk27");
+  const dm = document.getElementById("splashDriveMeta");
+  if (!splash || !tk || !dm) return;
+
+  setTimeout(() => {
+    tk.classList.remove("active");
+    dm.classList.add("active");
+  }, 1700);
+
+  setTimeout(() => {
+    splash.classList.add("hide");
+    setTimeout(() => splash.remove(), 500);
+  }, 3400);
+});
+</script>
+
 </body>
 </html>
