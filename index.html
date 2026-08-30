@@ -211,6 +211,15 @@
       <div id="editDaySummary" class="hint"></div><div id="editEntries" class="edit-list"></div>
     </div>
   </div>
+
+      <div class="option-block">
+        <h3>Backup dos dados</h3>
+        <button class="secondary" id="exportBackupBtn" type="button">⬇️ Exportar backup</button>
+        <button class="secondary" id="importBackupBtn" type="button">⬆️ Restaurar backup</button>
+        <input id="importBackupFile" type="file" accept=".json,application/json" style="display:none">
+        <div class="hint">Salve uma cópia dos lançamentos, metas, plataformas e configurações antes de reinstalar o app.</div>
+      </div>
+
 </div>
 
 <script>
@@ -447,6 +456,85 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => splash.remove(), 500);
   }, 3400);
 });
+</script>
+
+
+<script>
+(() => {
+  function backupPayload() {
+    const keys = ["driveMetaApp_v13","driveMetaApp_v12","metaDiariaApp_v11","metaDiariaApp_v2"];
+    const storage = {};
+    keys.forEach(k => {
+      const v = localStorage.getItem(k);
+      if (v !== null) storage[k] = v;
+    });
+    return {
+      app: "DriveMeta",
+      backupVersion: 1,
+      exportedAt: new Date().toISOString(),
+      storage
+    };
+  }
+
+  function exportBackup() {
+    try {
+      const data = JSON.stringify(backupPayload(), null, 2);
+      const blob = new Blob([data], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const d = new Date();
+      const stamp = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+      a.href = url;
+      a.download = "DriveMeta-backup-"+stamp+".json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),1000);
+      alert("Backup criado. Guarde esse arquivo antes de reinstalar o DriveMeta.");
+    } catch(e) {
+      alert("Não foi possível criar o backup.");
+    }
+  }
+
+  function restoreBackup(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        if (!data || data.app !== "DriveMeta" || !data.storage || typeof data.storage !== "object") {
+          throw new Error("invalid");
+        }
+        const allowed = ["driveMetaApp_v13","driveMetaApp_v12","metaDiariaApp_v11","metaDiariaApp_v2"];
+        let restored = 0;
+        allowed.forEach(k => {
+          if (typeof data.storage[k] === "string") {
+            JSON.parse(data.storage[k]); // validate saved JSON before writing
+            localStorage.setItem(k, data.storage[k]);
+            restored++;
+          }
+        });
+        if (!restored) throw new Error("empty");
+        alert("Backup restaurado com sucesso. O DriveMeta será recarregado.");
+        location.reload();
+      } catch(e) {
+        alert("Esse arquivo não é um backup válido do DriveMeta.");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const exp = document.getElementById("exportBackupBtn");
+    const imp = document.getElementById("importBackupBtn");
+    const file = document.getElementById("importBackupFile");
+    if (exp) exp.addEventListener("click", exportBackup);
+    if (imp && file) imp.addEventListener("click", () => file.click());
+    if (file) file.addEventListener("change", () => {
+      if (file.files && file.files[0]) restoreBackup(file.files[0]);
+      file.value = "";
+    });
+  });
+})();
 </script>
 
 </body>
