@@ -1,4 +1,4 @@
-const CACHE="drivemeta-v13-layout-2";
+const CACHE="drivemeta-v13-mobile-final-1";
 const ASSETS=["./","./index.html","./manifest.json","./icon-192.png","./icon-512.png","./tk27-labs.png"];
 self.addEventListener("install",event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));

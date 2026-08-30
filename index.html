@@ -116,39 +116,41 @@
     }
 
 
-/* v1.3 mobile options layout fix */
+/* FIX FINAL — Opções mobile em uma única coluna */
 @media(max-width:700px){
   .modal{
     padding:0 !important;
     align-items:flex-end !important;
+    justify-content:center !important;
   }
   .panel{
+    display:block !important;
     width:100% !important;
-    max-width:none !important;
+    max-width:100% !important;
     max-height:92dvh !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
     border-radius:20px 20px 0 0 !important;
     padding:16px !important;
-    overflow-x:hidden !important;
-    overflow-y:auto !important;
   }
-  .option-block{
+  .panel > .option-block{
+    display:block !important;
+    width:100% !important;
+    max-width:100% !important;
+    margin-left:0 !important;
+    margin-right:0 !important;
+  }
+  .option-row{
     width:100% !important;
     min-width:0 !important;
-    display:block !important;
+  }
+  .option-row input{
+    min-width:0 !important;
   }
   .platform-row{
     width:100% !important;
     grid-template-columns:minmax(0,1fr) auto !important;
-    gap:8px !important;
   }
-  .platform-row input{
-    min-width:0 !important;
-    width:100% !important;
-  }
-  .platform-row .check-row{
-    white-space:nowrap !important;
-  }
-  .platform-row .secondary,
   .platform-row .danger{
     grid-column:1/-1 !important;
     width:100% !important;
@@ -157,9 +159,6 @@
     width:100% !important;
     display:block !important;
     margin:8px 0 !important;
-  }
-  .quick-editor{
-    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
   }
 }
 
@@ -179,9 +178,6 @@
       <div class="splashDriveTag">Acompanhe. Planeje. Alcance.</div>
     </div>
   </div>
-</div>
-</div>
-
 <main class="app">
   <div class="top">
     <div class="brand"><img src="icon-192.png" alt=""><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><h1>DriveMeta</h1><span class="version">v1.3</span></div></div>
@@ -258,16 +254,16 @@
       <div class="option-row"><input id="editDate" type="date"><button id="loadDay" class="secondary">Abrir dia</button></div>
       <div id="editDaySummary" class="hint"></div><div id="editEntries" class="edit-list"></div>
     </div>
+
+    <div class="option-block">
+      <h3>Backup dos dados</h3>
+      <button class="secondary" id="exportBackupBtn" type="button">⬇️ Exportar backup</button>
+      <button class="secondary" id="importBackupBtn" type="button">⬆️ Restaurar backup</button>
+      <input id="importBackupFile" type="file" accept=".json,application/json" style="display:none">
+      <div class="hint">Salve uma cópia dos lançamentos, metas, plataformas e configurações antes de reinstalar o app.</div>
+    </div>
+
   </div>
-
-      <div class="option-block">
-        <h3>Backup dos dados</h3>
-        <button class="secondary" id="exportBackupBtn" type="button">⬇️ Exportar backup</button>
-        <button class="secondary" id="importBackupBtn" type="button">⬆️ Restaurar backup</button>
-        <input id="importBackupFile" type="file" accept=".json,application/json" style="display:none">
-        <div class="hint">Salve uma cópia dos lançamentos, metas, plataformas e configurações antes de reinstalar o app.</div>
-      </div>
-
 </div>
 
 <script>
