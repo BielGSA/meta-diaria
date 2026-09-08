@@ -2,6 +2,7 @@ package com.tk27labs.drivemeta.shortcut;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -9,47 +10,84 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.Gravity;
-import android.widget.Button;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
+    private static final String DRIVEMETA_URL = "https://bielgsa.github.io/meta-diaria/";
     private boolean waitingForOverlayPermission = false;
+    private WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        int pad = (int) (24 * getResources().getDisplayMetrics().density);
-        LinearLayout root = new LinearLayout(this);
-        root.setOrientation(LinearLayout.VERTICAL);
-        root.setGravity(Gravity.CENTER);
-        root.setPadding(pad, pad, pad, pad);
+        FrameLayout root = new FrameLayout(this);
 
-        TextView title = new TextView(this);
-        title.setText("DriveMeta — atalho flutuante");
-        title.setTextSize(24);
-        title.setGravity(Gravity.CENTER);
+        webView = new WebView(this);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.setWebChromeClient(new WebChromeClient());
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                Uri uri = request.getUrl();
+                String host = uri.getHost();
+                if (host != null && (host.equals("bielgsa.github.io") || host.endsWith(".github.io"))) {
+                    return false;
+                }
+                startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                return true;
+            }
+        });
+        webView.loadUrl(DRIVEMETA_URL);
 
-        TextView info = new TextView(this);
-        info.setText("Ative o atalho flutuante para abrir o DriveMeta rapidamente a partir de qualquer tela do celular.");
-        info.setTextSize(16);
-        info.setGravity(Gravity.CENTER);
-        info.setPadding(0, pad, 0, pad);
+        root.addView(webView, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
 
-        Button activate = new Button(this);
-        activate.setText("Ativar atalho flutuante");
-        activate.setOnClickListener(v -> enableBubble());
+        TextView settingsButton = new TextView(this);
+        settingsButton.setText("⚙");
+        settingsButton.setTextSize(24);
+        settingsButton.setGravity(Gravity.CENTER);
+        settingsButton.setBackgroundColor(0xDD0B1219);
+        settingsButton.setTextColor(0xFFFFFFFF);
+        settingsButton.setElevation(dp(8));
+        settingsButton.setOnClickListener(v -> showShortcutSettings());
 
-        Button stop = new Button(this);
-        stop.setText("Desativar atalho flutuante");
-        stop.setOnClickListener(v -> stopService(new Intent(this, BubbleService.class)));
+        FrameLayout.LayoutParams buttonParams = new FrameLayout.LayoutParams(dp(52), dp(52));
+        buttonParams.gravity = Gravity.TOP | Gravity.END;
+        buttonParams.topMargin = dp(16);
+        buttonParams.rightMargin = dp(16);
+        root.addView(settingsButton, buttonParams);
 
-        root.addView(title);
-        root.addView(info);
-        root.addView(activate);
-        root.addView(stop);
         setContentView(root);
+    }
+
+    private void showShortcutSettings() {
+        String[] options = new String[]{
+                "Ativar atalho flutuante",
+                "Desativar atalho flutuante"
+        };
+
+        new AlertDialog.Builder(this)
+                .setTitle("Atalho flutuante")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        enableBubble();
+                    } else {
+                        stopService(new Intent(this, BubbleService.class));
+                        Toast.makeText(this, "Atalho flutuante desativado", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Fechar", null)
+                .show();
     }
 
     private void enableBubble() {
@@ -74,6 +112,7 @@ public class MainActivity extends Activity {
         } else {
             startService(service);
         }
+        Toast.makeText(this, "Atalho flutuante ativado", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -83,5 +122,26 @@ public class MainActivity extends Activity {
             waitingForOverlayPermission = false;
             startBubbleService();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webView != null && webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (webView != null) {
+            webView.destroy();
+        }
+        super.onDestroy();
+    }
+
+    private int dp(int value) {
+        return (int) (value * getResources().getDisplayMetrics().density);
     }
 }
