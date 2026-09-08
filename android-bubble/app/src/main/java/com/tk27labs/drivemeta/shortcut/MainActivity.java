@@ -27,22 +27,22 @@ public class MainActivity extends Activity {
         root.setPadding(pad, pad, pad, pad);
 
         TextView title = new TextView(this);
-        title.setText("DriveMeta — bolha de atalho");
+        title.setText("DriveMeta — atalho flutuante");
         title.setTextSize(24);
         title.setGravity(Gravity.CENTER);
 
         TextView info = new TextView(this);
-        info.setText("A bolha serve somente para abrir o DriveMeta rapidamente sobre Uber, 99, inDrive e outros apps.");
+        info.setText("Ative o atalho flutuante para abrir o DriveMeta rapidamente a partir de qualquer tela do celular.");
         info.setTextSize(16);
         info.setGravity(Gravity.CENTER);
         info.setPadding(0, pad, 0, pad);
 
         Button activate = new Button(this);
-        activate.setText("Ativar bolha");
+        activate.setText("Ativar atalho flutuante");
         activate.setOnClickListener(v -> enableBubble());
 
         Button stop = new Button(this);
-        stop.setText("Desativar bolha");
+        stop.setText("Desativar atalho flutuante");
         stop.setOnClickListener(v -> stopService(new Intent(this, BubbleService.class)));
 
         root.addView(title);
