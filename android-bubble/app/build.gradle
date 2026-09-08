@@ -1,0 +1,16 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.tk27labs.drivemeta.shortcut'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.tk27labs.drivemeta.shortcut'
+        minSdk 26
+        targetSdk 33
+        versionCode 1
+        versionName '0.1-test'
+    }
+}
