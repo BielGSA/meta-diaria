@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.view.Gravity;
@@ -21,7 +20,6 @@ import android.widget.TextView;
 public class BubbleService extends Service {
     private static final String CHANNEL_ID = "drivemeta_bubble";
     private static final int NOTIFICATION_ID = 2712;
-    private static final String DRIVEMETA_URL = "https://bielgsa.github.io/meta-diaria/";
 
     private WindowManager windowManager;
     private View bubble;
@@ -102,8 +100,8 @@ public class BubbleService extends Service {
     }
 
     private void openDriveMeta() {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(DRIVEMETA_URL));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         startActivity(intent);
     }
 
@@ -113,16 +111,16 @@ public class BubbleService extends Service {
                     CHANNEL_ID,
                     "Atalho flutuante do DriveMeta",
                     NotificationManager.IMPORTANCE_LOW);
-            channel.setDescription("Mantém a bolha de atalho ativa.");
+            channel.setDescription("Mantém o atalho flutuante ativo.");
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel);
         }
     }
 
     private Notification buildNotification() {
-        Intent openSetup = new Intent(this, MainActivity.class);
+        Intent openApp = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(
-                this, 0, openSetup,
+                this, 0, openApp,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         Notification.Builder builder = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
@@ -131,7 +129,7 @@ public class BubbleService extends Service {
 
         return builder
                 .setContentTitle("DriveMeta")
-                .setContentText("Bolha de atalho ativa")
+                .setContentText("Atalho flutuante ativo")
                 .setSmallIcon(android.R.drawable.ic_menu_view)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
