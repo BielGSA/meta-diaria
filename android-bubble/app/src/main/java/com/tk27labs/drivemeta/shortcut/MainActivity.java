@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-    private static final int OVERLAY_REQUEST = 1001;
+    private boolean waitingForOverlayPermission = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +58,10 @@ public class MainActivity extends Activity {
         }
 
         if (!Settings.canDrawOverlays(this)) {
+            waitingForOverlayPermission = true;
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                     Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, OVERLAY_REQUEST);
+            startActivity(intent);
             return;
         }
         startBubbleService();
@@ -78,8 +79,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (Settings.canDrawOverlays(this)) {
-            // After returning from the Android overlay permission screen, activation is immediate.
+        if (waitingForOverlayPermission && Settings.canDrawOverlays(this)) {
+            waitingForOverlayPermission = false;
+            startBubbleService();
         }
     }
 }
