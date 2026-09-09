@@ -6,16 +6,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.IBinder;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 public class BubbleService extends Service {
     private static final String CHANNEL_ID = "drivemeta_bubble";
@@ -36,18 +34,10 @@ public class BubbleService extends Service {
     private void showBubble() {
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-        TextView view = new TextView(this);
-        view.setText("DM");
-        view.setTextColor(Color.WHITE);
-        view.setTextSize(15);
-        view.setGravity(Gravity.CENTER);
+        ImageView view = new ImageView(this);
+        view.setImageResource(com.tk27labs.drivemeta.shortcut.R.drawable.drivemeta_icon);
+        view.setScaleType(ImageView.ScaleType.CENTER_CROP);
         view.setElevation(dp(8));
-
-        GradientDrawable background = new GradientDrawable();
-        background.setShape(GradientDrawable.OVAL);
-        background.setColor(Color.rgb(11, 18, 25));
-        background.setStroke(dp(2), Color.WHITE);
-        view.setBackground(background);
 
         int overlayType = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
                 ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
