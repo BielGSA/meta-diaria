@@ -1,4 +1,4 @@
-name: Build DriveMeta Bubble APK
+name: Build DriveMeta Official APK
 
 on:
   push:
@@ -27,11 +27,11 @@ jobs:
         with:
           gradle-version: '8.7'
 
-      - name: Build debug APK
-        run: gradle -p android-bubble assembleDebug
+      - name: Build release APK
+        run: gradle -p android-bubble assembleRelease
 
-      - name: Upload APK
+      - name: Upload unsigned release APK
         uses: actions/upload-artifact@v4
         with:
-          name: DriveMeta-bolha-teste
-          path: android-bubble/app/build/outputs/apk/debug/app-debug.apk
+          name: DriveMeta-1.3.0-release-unsigned
+          path: android-bubble/app/build/outputs/apk/release/app-release-unsigned.apk
