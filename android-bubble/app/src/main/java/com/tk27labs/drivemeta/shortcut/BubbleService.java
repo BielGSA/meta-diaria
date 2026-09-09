@@ -6,7 +6,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.IBinder;
 import android.view.Gravity;
@@ -38,6 +40,15 @@ public class BubbleService extends Service {
         view.setImageResource(com.tk27labs.drivemeta.shortcut.R.drawable.drivemeta_icon);
         view.setScaleType(ImageView.ScaleType.CENTER_CROP);
         view.setElevation(dp(8));
+
+        // Recorta a imagem em formato circular para eliminar as bordas quadradas
+        // do arquivo original do ícone. Não adiciona contorno nem fundo extra.
+        GradientDrawable clipShape = new GradientDrawable();
+        clipShape.setShape(GradientDrawable.OVAL);
+        clipShape.setColor(Color.TRANSPARENT);
+        view.setBackground(clipShape);
+        view.setClipToOutline(true);
+        view.setPadding(0, 0, 0, 0);
 
         int overlayType = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
                 ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
