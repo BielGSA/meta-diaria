@@ -7,10 +7,10 @@ android {
     compileSdk 35
 
     defaultConfig {
-        applicationId 'com.tk27labs.drivemeta.shortcut'
+        applicationId 'com.tk27labs.drivemeta'
         minSdk 26
         targetSdk 35
-        versionCode 4
-        versionName '0.4-unificado-teste'
+        versionCode 10300
+        versionName '1.3.0'
     }
 }
