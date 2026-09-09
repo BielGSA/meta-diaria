@@ -8,6 +8,7 @@
     <application
         android:allowBackup="true"
         android:label="DriveMeta"
+        android:icon="@drawable/drivemeta_icon"
         android:theme="@style/Theme.DriveMetaShortcut">
 
         <activity
