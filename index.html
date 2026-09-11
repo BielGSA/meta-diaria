@@ -274,6 +274,7 @@
 
 <script>
 const KEY="driveMetaApp_v13";
+const BACKUP_KEY="driveMetaApp_v13_backup";
 const OLD_KEYS=["driveMetaApp_v12","metaDiariaApp_v11","metaDiariaApp_v2"];
 const DEFAULT_PLATFORMS=["99","Uber","inDrive","Lalamove","Gorjetas","Viagem por Fora"];
 let state={
@@ -313,10 +314,23 @@ function normalizeState(p){
   });
   return out;
 }
-function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function save(){
+  const serialized=JSON.stringify(state);
+  localStorage.setItem(KEY,serialized);
+  localStorage.setItem(BACKUP_KEY,serialized);
+}
 function load(){
   const own=localStorage.getItem(KEY);
-  if(own){try{state=normalizeState(JSON.parse(own));ensureToday();return}catch{}}
+  if(own){try{state=normalizeState(JSON.parse(own));ensureToday();localStorage.setItem(BACKUP_KEY,JSON.stringify(state));return}catch{}}
+  const backup=localStorage.getItem(BACKUP_KEY);
+  if(backup){
+    try{
+      state=normalizeState(JSON.parse(backup));
+      ensureToday();
+      localStorage.setItem(KEY,JSON.stringify(state));
+      return;
+    }catch{}
+  }
   for(const key of OLD_KEYS){
     const raw=localStorage.getItem(key);if(!raw)continue;
     try{
