@@ -388,7 +388,7 @@ function renderDays(){
   document.querySelectorAll(".day").forEach(el=>el.onclick=()=>{openOptions();$("editDate").value=el.dataset.date;renderEditDay()});
 }
 function renderEntries(){
-  const today=ensureToday();$("entriesTitle").textContent=`Histórico de lançamentos (${today.entries.length})`;
+  const today=ensureToday();const trips=tripCount(today.entries);$("entriesTitle").textContent=`Histórico de lançamentos (${trips} ${trips===1?"viagem":"viagens"})`;
   if(!today.entries.length){$("entriesHistory").innerHTML='<div class="empty">Nenhum lançamento hoje.</div>';return}
   let running=0;
   const rows=today.entries.map((e,i)=>{running+=Number(e.value||0);return {...e,running,i}});
