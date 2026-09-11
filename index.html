@@ -31,6 +31,12 @@
     .goal-sub{color:#cbd5e1;font-size:17px;margin-top:8px}.goal-pct{font-size:28px;color:var(--green);font-weight:900;margin-top:16px}.goal-small{color:var(--muted);margin-top:5px}
     input,select{width:100%;border:1px solid var(--border);border-radius:12px;background:#0c141d;color:var(--text);padding:13px 14px;font-size:17px;outline:none}
     input:focus,select:focus{border-color:#3c8cff}
+    #amountInput{transition:background-color .2s,color .2s,border-color .2s; font-weight:800}
+    #amountInput.platform-99{background:#ffd600;color:#111;border-color:#ffd600}
+    #amountInput.platform-indrive{background:#b9f227;color:#102000;border-color:#b9f227}
+    #amountInput.platform-uber{background:#050505;color:#fff;border-color:#555}
+    #amountInput.platform-lalamove{background:#ff671d;color:#fff;border-color:#ff671d}
+    #amountInput.platform-gorjetas{background:#fff;color:#111;border-color:#e5e7eb}
     button{border:0;border-radius:12px;padding:13px 14px;font-weight:800;font-size:15px;cursor:pointer}
     .primary{background:#163d26;color:#4ee176}.secondary{background:#1f2a36;color:#e5e7eb}.danger{background:#3b1717;color:#ff7b7b}
     .options-btn{padding:10px 12px;white-space:nowrap}
@@ -343,6 +349,13 @@ function renderAppButtons(){
   $("appButtons").innerHTML=visible.map(a=>`<button class="app-btn ${a===state.selectedApp?"active":""}" data-app="${esc(a)}">${esc(a).toUpperCase()}</button>`).join("");
   document.querySelectorAll(".app-btn").forEach(b=>b.onclick=()=>{state.selectedApp=b.dataset.app;renderAppButtons();save()});
   $("selectedAppLabel").textContent=state.selectedApp||"Nenhuma";
+  const amount=$("amountInput"),name=String(state.selectedApp||"").toLowerCase();
+  amount.classList.remove("platform-99","platform-indrive","platform-uber","platform-lalamove","platform-gorjetas");
+  if(name==="99")amount.classList.add("platform-99");
+  else if(name==="indrive")amount.classList.add("platform-indrive");
+  else if(name==="uber")amount.classList.add("platform-uber");
+  else if(name==="lalamove")amount.classList.add("platform-lalamove");
+  else if(name==="gorjetas")amount.classList.add("platform-gorjetas");
 }
 function renderPlatformSummary(){
   const totals={};state.platforms.forEach(a=>totals[a]=0);
