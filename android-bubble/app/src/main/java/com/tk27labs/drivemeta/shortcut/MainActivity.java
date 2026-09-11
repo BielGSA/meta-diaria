@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
@@ -20,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
-    private static final String DRIVEMETA_URL = "https://bielgsa.github.io/meta-diaria/";
+    private static final String DRIVEMETA_URL = "https://bielgsa.github.io/meta-diaria/?appVersion=10301";
     private boolean waitingForOverlayPermission = false;
     private WebView webView;
 
@@ -33,6 +34,8 @@ public class MainActivity extends Activity {
         webView = new WebView(this);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webView.clearCache(true);
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient() {
             @Override
