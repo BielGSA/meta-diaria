@@ -292,6 +292,8 @@ function localDateKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMon
 function ensureDay(k=localDateKey()){if(!state.days[k])state.days[k]={entries:[]};if(!Array.isArray(state.days[k].entries))state.days[k].entries=[];return state.days[k]}
 function ensureToday(){return ensureDay()}
 function totalEntries(entries=[]){return entries.reduce((s,e)=>s+Number(e.value||0),0)}
+function isTipEntry(entry){return String(entry?.app||"").trim().toLowerCase()==="gorjetas"}
+function tripCount(entries=[]){return entries.filter(e=>!isTipEntry(e)).length}
 function uniqueNames(a){return [...new Set(a.map(x=>String(x||"").trim()).filter(Boolean))]}
 
 function normalizeState(p){
