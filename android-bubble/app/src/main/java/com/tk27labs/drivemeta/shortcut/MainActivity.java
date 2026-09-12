@@ -64,8 +64,8 @@ public class MainActivity extends Activity {
         settingsButton.setOnClickListener(v -> showShortcutSettings());
 
         FrameLayout.LayoutParams buttonParams = new FrameLayout.LayoutParams(dp(52), dp(52));
-        buttonParams.gravity = Gravity.TOP | Gravity.END;
-        buttonParams.topMargin = dp(16);
+        buttonParams.gravity = Gravity.BOTTOM | Gravity.END;
+        buttonParams.bottomMargin = dp(24);
         buttonParams.rightMargin = dp(16);
         root.addView(settingsButton, buttonParams);
 
