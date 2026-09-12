@@ -258,7 +258,7 @@
     <div class="option-block">
       <h3>Editar lançamentos</h3>
       <div class="option-row"><input id="editDate" type="date"><button id="loadDay" class="secondary">Abrir dia</button></div>
-      <div id="editDaySummary" class="hint"></div><div id="editEntries" class="edit-list"></div>
+      <div id="editDaySummary" class="hint"></div><div id="editPlatformSummary" class="platform-summary" style="margin:10px 0"></div><div id="editEntries" class="edit-list"></div>
     </div>
 
     <div class="option-block">
@@ -472,8 +472,12 @@ function renderPlatformManager(){
 function renderEditDay(){
   const k=$("editDate").value;if(!k)return;
   const day=state.days[k];
-  if(!day||!day.entries?.length){$("editDaySummary").textContent="Nenhum lançamento neste dia.";$("editEntries").innerHTML="";return}
-  $("editDaySummary").textContent=`${day.entries.length} lançamento(s) • Total ${money(totalEntries(day.entries))}`;
+  if(!day||!day.entries?.length){$("editDaySummary").textContent="Nenhum lançamento neste dia.";$("editPlatformSummary").innerHTML="";$("editEntries").innerHTML="";return}
+  const trips=tripCount(day.entries);
+  $("editDaySummary").textContent=`${day.entries.length} lançamento(s) • ${trips} viagem(ns) • Total ${money(totalEntries(day.entries))}`;
+  const platformTotals={};
+  day.entries.forEach(e=>{const app=e.app||"Sem plataforma";platformTotals[app]=(platformTotals[app]||0)+Number(e.value||0)});
+  $("editPlatformSummary").innerHTML=Object.entries(platformTotals).sort((a,b)=>b[1]-a[1]).map(([app,total])=>`<div class="platform-box"><span>${esc(app)}</span><strong>${money(total)}</strong></div>`).join("");
   $("editEntries").innerHTML=day.entries.map((e,i)=>`
     <div class="edit-item">
       <div class="edit-meta">Lançamento ${i+1} • ${new Date(e.date).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</div>
