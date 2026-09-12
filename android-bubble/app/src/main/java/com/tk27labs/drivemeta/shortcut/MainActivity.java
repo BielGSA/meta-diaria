@@ -21,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
-    private static final String DRIVEMETA_URL = "https://bielgsa.github.io/meta-diaria/?appVersion=10301";
+    private static final String DRIVEMETA_URL = "https://bielgsa.github.io/meta-diaria/?appVersion=10303";
     private boolean waitingForOverlayPermission = false;
     private WebView webView;
 
