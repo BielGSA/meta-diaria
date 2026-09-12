@@ -503,6 +503,28 @@ $("optionsModal").onclick=e=>{if(e.target===$("optionsModal"))closeOptions()};
 $("saveGoal").onclick=()=>{const g=parseMoney($("goalInput").value);if(!Number.isFinite(g)||g<=0){alert("Digite uma meta válida.");return}state.goal=g;update();alert("Meta atualizada.")};
 $("saveQuick").onclick=()=>{const vals=[...document.querySelectorAll(".quick-setting")].map(el=>parseMoney(el.value));if(vals.some(v=>!Number.isFinite(v)||v<=0)){alert("Preencha os quatro valores corretamente.");return}state.quickValues=vals;renderQuick();save();alert("Valores rápidos atualizados.")};
 $("addPlatform").onclick=()=>{const name=$("newPlatformName").value.trim();if(!name)return;if(state.platforms.some(x=>x.toLowerCase()===name.toLowerCase())){alert("Essa plataforma já existe.");return}state.platforms.push(name);state.homePlatforms.push(name);$("newPlatformName").value="";save();update();renderPlatformManager()};
+$("exportBackupBtn").onclick=()=>{
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=`DriveMeta-backup-${localDateKey()}.json`;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+$("importBackupBtn").onclick=()=>{$("importBackupFile").value="";$("importBackupFile").click()};
+$("importBackupFile").onchange=e=>{
+  const file=e.target.files?.[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const parsed=JSON.parse(String(reader.result||""));
+      const restored=normalizeState(parsed);
+      if(!restored.days||typeof restored.days!=="object")throw new Error("backup inválido");
+      if(!confirm("Restaurar este backup? Os dados atuais serão substituídos."))return;
+      state=restored;ensureToday();save();renderQuick();update();renderPlatformManager();
+      alert("Backup restaurado com sucesso.");
+    }catch{alert("Não foi possível restaurar este backup. Verifique se o arquivo é um backup válido do DriveMeta.")}
+  };
+  reader.readAsText(file);
+};
 $("loadDay").onclick=renderEditDay;$("addBtn").onclick=addValue;$("amountInput").onkeydown=e=>{if(e.key==="Enter")addValue()};
 $("undoBtn").onclick=()=>{const e=ensureToday().entries;if(e.length&&confirm("Desfazer o último lançamento?")){e.pop();update()}};
 $("resetBtn").onclick=()=>{if(confirm("Deseja zerar todos os lançamentos de hoje?")){ensureToday().entries=[];update()}};
